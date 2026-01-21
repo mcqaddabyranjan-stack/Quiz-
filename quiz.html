@@ -1,0 +1,269 @@
+﻿<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class 10 Science - Interactive Quiz</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --success-color: #27ae60;
+            --error-color: #e74c3c;
+            --bg-color: #f4f7f6;
+        }
+
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+
+        .quiz-container {
+            background: white;
+            width: 100%;
+            max-width: 600px;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 24px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+
+        .question-box {
+            margin-bottom: 30px;
+            padding: 15px;
+            border-left: 5px solid var(--primary-color);
+            background: #fafafa;
+        }
+
+
+        .question-text {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+
+        .options-container {
+            display: grid;
+            gap: 10px;
+        }
+
+
+        .option {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            font-size: 16px;
+        }
+
+
+        .option:hover:not(.disabled) {
+            background-color: #f0f0f0;
+            border-color: #999;
+        }
+
+
+        .option.correct {
+            background-color: var(--success-color) !important;
+            color: white;
+            border-color: var(--success-color);
+        }
+
+
+        .option.wrong {
+            background-color: var(--error-color) !important;
+            color: white;
+            border-color: var(--error-color);
+        }
+
+
+        .option.disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+
+        .explanation {
+            margin-top: 10px;
+            padding: 10px;
+            background: #e8f4fd;
+            border-radius: 5px;
+            font-size: 14px;
+            display: none;
+            color: #2980b9;
+        }
+
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+
+
+<div class="quiz-container">
+    <h1>विज्ञान प्रश्नोत्तरी (Class 10)</h1>
+    <div id="quiz"></div>
+    <div class="footer">© 2026 | महत्वपूर्ण बोर्ड परीक्षा प्रश्न</div>
+</div>
+
+
+<script>
+    const quizData = [
+        {
+            q: "किसी दर्पण से आप चाहे कितनी ही दूर खड़े हों, आपका प्रतिबिंब सदैव सीधा प्रतीत होता है। वह दर्पण संभवतः कौन-सा है?",
+            a: "या तो समतल अथवा उत्तल",
+            options: ["केवल समतल", "केवल अवतल", "केवल उत्तल", "या तो समतल अथवा उत्तल"],
+            exp: "समतल और उत्तल दर्पण हमेशा सीधा और आभासी प्रतिबिंब बनाते हैं।"
+        },
+        {
+            q: "स्वस्थ नेत्र के लिए स्पष्ट दृष्टि की न्यूनतम दूरी कितनी होती है?",
+            a: "25 cm",
+            options: ["25 m", "2.5 cm", "25 cm", "अनंत"],
+            exp: "सामान्य आँख के लिए निकट बिंदु 25 सेंटीमीटर होता है।"
+        },
+        {
+            q: "अम्लीय विलयन का pH मान क्या होता है?",
+            a: "7 से कम",
+            options: ["7 से कम", "7 से अधिक", "7 के बराबर", "शून्य"],
+            exp: "pH स्केल पर 7 से कम मान अम्लीयता को दर्शाता है।"
+        },
+        {
+            q: "विरंजक चूर्ण (Bleaching Powder) का रासायनिक सूत्र क्या है?",
+            a: "CaOCl2",
+            options: ["CaCO3", "CaOCl2", "Ca(OH)2", "CaCl2"],
+            exp: "कैल्शियम ऑक्सीक्लोराइड (CaOCl2) को विरंजक चूर्ण कहते हैं।"
+        },
+        {
+            q: "पादप में 'जाइलम' उत्तरदायी है:",
+            a: "जल का वहन",
+            options: ["जल का वहन", "भोजन का वहन", "अमीनो अम्ल का वहन", "ऑक्सीजन का वहन"],
+            exp: "जाइलम ऊतक जड़ों से जल और खनिजों को पत्तियों तक पहुँचाता है।"
+        },
+        {
+            q: "आधुनिक आवर्त सारणी में आवर्तों (Rows) की संख्या कितनी है?",
+            a: "7",
+            options: ["18", "7", "8", "10"],
+            exp: "आधुनिक आवर्त सारणी में 7 क्षैतिज पंक्तियाँ (आवर्त) और 18 समूह होते हैं।"
+        },
+        {
+            q: "विद्युत शक्ति का SI मात्रक क्या है?",
+            a: "वाट (W)",
+            options: ["वोल्ट", "ओम", "एम्पियर", "वाट (W)"],
+            exp: "विद्युत शक्ति को वाट में मापा जाता है (P = VI)।"
+        },
+        {
+            q: "निम्नलिखित में से कौन-सा 'पादप हार्मोन' है?",
+            a: "साइटोकाइनिन",
+            options: ["इन्सुलिन", "थायरोक्सिन", "एस्ट्रोजन", "साइटोकाइनिन"],
+            exp: "साइटोकाइनिन कोशिका विभाजन को बढ़ावा देने वाला एक पादप हार्मोन है।"
+        },
+        {
+            q: "निर्वात में प्रकाश की चाल कितनी होती है?",
+            a: "3 × 10^8 m/s",
+            options: ["3 × 10^5 m/s", "2 × 10^8 m/s", "3 × 10^8 m/s", "3 × 10^10 m/s"],
+            exp: "प्रकाश निर्वात में सबसे तेज़ गति (3 लाख किमी प्रति सेकंड) से चलता है।"
+        },
+        {
+            q: "मेंडल ने अपने प्रयोग के लिए किस पौधे का चयन किया था?",
+            a: "मटर",
+            options: ["गुलाब", "गेहूँ", "मटर", "धान"],
+            exp: "ग्रेगर जॉन मेंडल ने आनुवंशिकी के नियमों के लिए उद्यान मटर का उपयोग किया था।"
+        }
+    ];
+
+
+    const quizContainer = document.getElementById('quiz');
+
+
+    function loadQuiz() {
+        quizData.forEach((data, index) => {
+            const qBox = document.createElement('div');
+            qBox.className = 'question-box';
+
+
+            const qText = document.createElement('div');
+            qText.className = 'question-text';
+            qText.innerText = `Q${index + 1}. ${data.q}`;
+            qBox.appendChild(qText);
+
+
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'options-container';
+
+
+            data.options.forEach(optionText => {
+                const btn = document.createElement('div');
+                btn.className = 'option';
+                btn.innerText = optionText;
+                btn.onclick = () => checkAnswer(btn, optionText, data.a, optionsDiv, index);
+                optionsDiv.appendChild(btn);
+            });
+
+
+            const expDiv = document.createElement('div');
+            expDiv.className = 'explanation';
+            expDiv.id = `exp-${index}`;
+            expDiv.innerText = `व्याख्या: ${data.exp}`;
+
+
+            qBox.appendChild(optionsDiv);
+            qBox.appendChild(expDiv);
+            quizContainer.appendChild(qBox);
+        });
+    }
+
+
+    function checkAnswer(selectedBtn, selectedText, correctText, optionsDiv, qIndex) {
+        const allOptions = optionsDiv.querySelectorAll('.option');
+        
+        // Disable all options in this question
+        allOptions.forEach(opt => opt.classList.add('disabled'));
+
+
+        if (selectedText === correctText) {
+            selectedBtn.classList.add('correct');
+        } else {
+            selectedBtn.classList.add('wrong');
+            // Highlight the correct answer
+            allOptions.forEach(opt => {
+                if (opt.innerText === correctText) {
+                    opt.classList.add('correct');
+                }
+            });
+        }
+
+
+        // Show explanation
+        document.getElementById(`exp-${qIndex}`).style.display = 'block';
+    }
+
+
+    loadQuiz();
+</script>
+
+
+</body>
+</html>
