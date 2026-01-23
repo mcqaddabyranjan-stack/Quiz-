@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo Quiz – Locked Option</title>
+
+<style>
+body{
+  font-family: Arial, sans-serif;
+  background:#f4f7fb;
+  margin:0;
+  padding:15px;
+}
+.quiz-box{
+  max-width:700px;
+  margin:auto;
+  background:#fff;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 4px 15px rgba(0,0,0,0.1);
+}
+.question{
+  margin-top:20px;
+  font-weight:bold;
+}
+.option{
+  margin:8px 0;
+  padding:10px;
+  border:2px solid #ccc;
+  border-radius:8px;
+  cursor:pointer;
+}
+.option:hover{background:#eef;}
+.correct{
+  background:#27ae60;
+  color:#fff;
+  border-color:#27ae60;
+}
+.wrong{
+  background:#e74c3c;
+  color:#fff;
+  border-color:#e74c3c;
+}
+.locked{
+  pointer-events:none; /* 🔒 LOCK */
+}
+#result{
+  margin-top:25px;
+  padding:15px;
+  font-size:18px;
+  text-align:center;
+  display:none;
+  background:#e3f2fd;
+  border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="quiz-box">
+  <h2 style="text-align:center">Demo Quiz (Locked Option)</h2>
+  <div id="quiz"></div>
+  <div id="result"></div>
+</div>
+
+<script>
+const quizData = [
+ {q:"1. प्रकाश किस दिशा में चलता है?",
+  a:"B",
+  o:["A. टेढ़ी","B. सीधी रेखा में","C. गोल","D. बदलती दिशा"]},
+
+ {q:"2. समतल दर्पण में छवि कैसी होती है?",
+  a:"C",
+  o:["A. वास्तविक","B. उलटी","C. आभासी","D. धुँधली"]},
+
+ {q:"3. वाहन में पीछे देखने के लिए कौन सा दर्पण?",
+  a:"B",
+  o:["A. अवतल","B. उत्तल","C. समतल","D. कोई नहीं"]},
+
+ {q:"4. अपवर्तन कब होता है?",
+  a:"C",
+  o:["A. प्रकाश रुके","B. रंग बदले","C. माध्यम बदले","D. ताप बढ़े"]},
+
+ {q:"5. उत्तल लेंस कैसा होता है?",
+  a:"B",
+  o:["A. अपसारी","B. अभिसारी","C. समतल","D. धातु"]}
+];
+
+let score = 0;
+let answered = 0;
+
+const quiz = document.getElementById("quiz");
+
+quizData.forEach((item,i)=>{
+  const qDiv = document.createElement("div");
+  qDiv.innerHTML = `<div class="question">${item.q}</div>`;
+  
+  item.o.forEach(opt=>{
+    const oDiv = document.createElement("div");
+    oDiv.className = "option";
+    oDiv.innerText = opt;
+
+    oDiv.onclick = ()=>{
+      if(qDiv.classList.contains("locked")) return;
+
+      qDiv.classList.add("locked");
+      const options = qDiv.querySelectorAll(".option");
+      options.forEach(op=>op.classList.add("locked"));
+
+      if(opt.startsWith(item.a)){
+        oDiv.classList.add("correct");
+        score++;
+      }else{
+        oDiv.classList.add("wrong");
+        options.forEach(op=>{
+          if(op.innerText.startsWith(item.a)){
+            op.classList.add("correct");
+          }
+        });
+      }
+
+      answered++;
+      if(answered === quizData.length){
+        const res = document.getElementById("result");
+        res.style.display = "block";
+        res.innerHTML = `आपका स्कोर: <b>${score}</b> / ${quizData.length}`;
+        window.scrollTo(0, document.body.scrollHeight);
+      }
+    };
+
+    qDiv.appendChild(oDiv);
+  });
+
+  quiz.appendChild(qDiv);
+});
+</script>
+
+</body>
+</html>
