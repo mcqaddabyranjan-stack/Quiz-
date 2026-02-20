@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 5 - प्रकाश का अपवर्तन 40 MCQ Quiz</title>
+    <style>
+        :root { --primary: #2c3e50; --success: #27ae60; --danger: #e74c3c; --bg: #f4f7f6; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); margin: 0; padding: 10px; display: flex; justify-content: center; }
+        #quiz-wrapper { max-width: 850px; width: 100%; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        .header { text-align: center; border-bottom: 3px solid var(--primary); margin-bottom: 20px; padding-bottom: 10px; }
+        #timer-box { font-size: 1.5rem; font-weight: bold; color: var(--danger); text-align: center; position: sticky; top: 0; background: white; padding: 12px; z-index: 1000; border: 2px solid var(--danger); border-radius: 10px; margin-bottom: 25px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .q-card { background: #fff; padding: 20px; margin-bottom: 25px; border-radius: 10px; border: 1px solid #ddd; border-left: 6px solid var(--primary); }
+        .option { display: block; width: 100%; padding: 14px; margin: 10px 0; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer; text-align: left; font-size: 1rem; }
+        .correct { background-color: var(--success) !important; color: white !important; border-color: #1e8449 !important; }
+        .wrong { background-color: var(--danger) !important; color: white !important; border-color: #c0392b !important; }
+        .locked { pointer-events: none; }
+        .explanation { display: none; margin-top: 15px; padding: 12px; background: #eef7ff; border-radius: 6px; font-style: italic; border-left: 4px solid #3498db; }
+        #final-screen, #certificate-display { display: none; text-align: center; padding: 40px; }
+        #certificate-display { border: 15px double var(--primary); background: #fff; padding: 50px; }
+        .btn-large { background: var(--primary); color: white; padding: 16px 35px; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1rem; margin-top: 25px; font-weight: bold; }
+        @media print { .no-print { display: none; } }
+    </style>
+</head>
+<body>
+
+<div id="quiz-wrapper">
+    <div id="quiz-ui">
+        <div class="header">
+            <h1>Day 5 - विज्ञान (Physics) क्विज़</h1>
+            <p>अध्याय: प्रकाश का अपवर्तन (Refraction of Light)</p>
+        </div>
+        <div id="timer-box">समय शेष: 30:00</div>
+        <div id="questions-list"></div>
+    </div>
+
+    <div id="final-screen">
+        <h2 style="color: var(--success); font-size: 2.5rem;">क्विज़ संपन्न!</h2>
+        <p id="final-score-text" style="font-size: 2rem; font-weight: bold; margin: 20px 0;"></p>
+        <input type="text" id="studentName" placeholder="अपना नाम लिखें" style="padding: 15px; width: 80%; border-radius: 8px; border: 2px solid #ccc;"><br>
+        <button class="btn-large" onclick="renderCertificate()">सर्टिफिकेट प्राप्त करें</button>
+    </div>
+
+    <div id="certificate-display">
+        <h1 style="color: #b8860b;">सफलता प्रमाण पत्र</h1>
+        <p>प्रमाणित किया जाता है कि</p>
+        <h2 id="cert-user-name"></h2>
+        <p>ने <b>"प्रकाश का अपवर्तन"</b> परीक्षा सफलतापूर्वक पूर्ण की।</p>
+        <p>स्कोर: <strong id="cert-score"></strong> / 40 | प्रतिशत: <strong id="cert-percent"></strong>%</p>
+        <p>दिनांक: <span id="cert-date"></span></p>
+        <button class="btn-large no-print" onclick="window.print()">प्रिंट / PDF सेव करें</button>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {q: "जब प्रकाश की किरण एक पारदर्शी माध्यम से दूसरे में जाती है, तो पथ से विचलित हो जाती है। इसे क्या कहते हैं?", o: ["परावर्तन", "अपवर्तन", "वर्ण-विक्षेपण", "प्रकीर्णन"], a: 1, e: "इसे प्रकाश का अपवर्तन कहते हैं।"},
+        {q: "प्रकाश का अपवर्तन मुख्य रूप से किस कारण से होता है?", o: ["चाल का अलग-अलग होना", "पारदर्शिता", "तीव्रता में परिवर्तन", "वस्तु का रंग"], a: 0, e: "विभिन्न माध्यमों में प्रकाश की चाल अलग-अलग होती है।"},
+        {q: "जब किरण विरल (हवा) से सघन (कांच) में जाती है, तो वह:", o: ["अभिलंब से दूर हटती है", "अभिलंब की ओर झुकती है", "सीधी निकलती है", "परावर्तित होती है"], a: 1, e: "सघन माध्यम में वेग कम होने से किरण अभिलंब की ओर झुकती है।"},
+        {q: "स्नेल का नियम (Snell's Law) गणितीय रूप में क्या है?", o: ["sin i / sin r = constant", "sin i × sin r = constant", "sin r / sin i = constant", "i = r"], a: 0, e: "sin i / sin r = स्थिरांक।"},
+        {q: "निर्वात में प्रकाश की चाल कितनी होती है?", o: ["3 × 10^8 m/s", "2.25 × 10^8 m/s", "3 × 10^5 m/s", "2 × 10^8 m/s"], a: 0, e: "3 लाख किमी प्रति सेकंड।"},
+        {q: "माध्यम का अपवर्तनांक (n) ज्ञात करने का सूत्र क्या है?", o: ["n = v / c", "n = c / v", "n = c × v", "n = c + v"], a: 1, e: "n = निर्वात में चाल / माध्यम में चाल।"},
+        {q: "हीरे का अपवर्तनांक 2.42 है। इसका क्या अर्थ है?", o: ["चाल निर्वात से अधिक है", "चाल 2.42 गुना है", "चाल निर्वात की 1/2.42 गुनी है", "हीरा परावर्तित नहीं करता"], a: 2, e: "इसका मतलब हीरे में प्रकाश की चाल बहुत कम हो जाती है।"},
+        {q: "पानी में रखी पेंसिल मुड़ी हुई प्रतीत होती है, कारण है:", o: ["परावर्तन", "अपवर्तन", "विक्षेपण", "विवर्तन"], a: 1, e: "प्रकाश के अपवर्तन के कारण।"},
+        {q: "लेंस की क्षमता (Power of Lens) का SI मात्रक क्या है?", o: ["मीटर", "डाइऑप्टर", "सेंटीमीटर", "वाट"], a: 1, e: "इसे 'D' से दर्शाते हैं।"},
+        {q: "किस लेंस को 'अभिसारी लेंस' कहा जाता है?", o: ["अवलत लेंस", "उत्तल लेंस", "बेलनाकार लेंस", "समतल कांच"], a: 1, e: "उत्तल लेंस किरणों को एक बिंदु पर एकत्रित करता है।"},
+        {q: "उत्तल लेंस की फोकस दूरी हमेशा होती है:", o: ["ऋणात्मक (-)", "धनात्मक (+)", "शून्य", "अनंत"], a: 1, e: "उत्तल लेंस की f हमेशा धनात्मक होती है।"},
+        {q: "लेंस की क्षमता -2.0 D है। यह किस प्रकार का लेंस है?", o: ["उत्तल लेंस", "अवतल लेंस", "समतल-उत्तल", "द्वि-उत्तल"], a: 1, e: "ऋणात्मक क्षमता अवतल लेंस की होती है।"},
+        {q: "लेंस सूत्र (Lens Formula) क्या है?", o: ["1/v + 1/u = 1/f", "1/v - 1/u = 1/f", "v - u = f", "1/u - 1/v = 1/f"], a: 1, e: "1/v - 1/u = 1/f (दर्पण सूत्र में प्लस होता है)।"},
+        {q: "लेंस के आवर्धन (m) का सूत्र क्या है?", o: ["m = -v/u", "m = v/u", "m = v × u", "m = h' / h"], a: 1, e: "लेंस के लिए m = v/u होता है।"},
+        {q: "जब वस्तु उत्तल लेंस के '2F' पर हो, तो प्रतिबिंब कहाँ बनेगा?", o: ["F पर", "2F पर", "F और 2F के बीच", "अनंत पर"], a: 1, e: "2F पर रखी वस्तु का प्रतिबिंब 2F पर ही बनता है।"},
+        {q: "उत्तल लेंस द्वारा काल्पनिक और सीधा प्रतिबिंब कब बनता है?", o: ["अनंत पर हो", "F और केंद्र (P) के बीच हो", "2F पर हो", "F पर हो"], a: 1, e: "जब वस्तु अत्यंत निकट हो।"},
+        {q: "लेंस का केंद्रीय बिंदु क्या कहलाता है?", o: ["वक्रता केंद्र", "प्रकाशिक केंद्र", "ध्रुव", "फोकस"], a: 1, e: "इसे Optical Centre कहते हैं।"},
+        {q: "अवतल लेंस द्वारा बना प्रतिबिंब हमेशा होता है:", o: ["वास्तविक और उल्टा", "आभासी और सीधा", "आभासी और उल्टा", "वास्तविक और सीधा"], a: 1, e: "अवतल लेंस हमेशा छोटा, सीधा और आभासी प्रतिबिंब बनाता है।"},
+        {q: "मृगतृष्णा (Mirage) बनने का मुख्य कारण क्या है?", o: ["परावर्तन", "पूर्ण आंतरिक परावर्तन", "विक्षेपण", "विवर्तन"], a: 1, e: "Total Internal Reflection के कारण।"},
+        {q: "उत्तल लेंस की f = 25 cm है। इसकी क्षमता क्या होगी?", o: ["+4 D", "-4 D", "+2.5 D", "+0.04 D"], a: 0, e: "P = 100/25 = +4 D।"},
+        {q: "क्रांति कोण (Critical Angle) के लिए अपवर्तन कोण का मान कितना होता है?", o: ["0°", "45°", "90°", "180°"], a: 2, e: "जब अपवर्तन कोण 90° हो जाता है।"},
+        {q: "प्रकाशिक तंतु (Optical Fibre) किस सिद्धांत पर कार्य करता है?", o: ["अपवर्तन", "पूर्ण आंतरिक परावर्तन", "प्रकीर्णन", "हस्तक्षेप"], a: 1, e: "पूर्ण आंतरिक परावर्तन पर।"},
+        {q: "लेंस बनाने के लिए किस पदार्थ का उपयोग नहीं किया जा सकता?", o: ["कांच", "मिट्टी", "प्लास्टिक", "जल"], a: 1, e: "मिट्टी अपारदर्शी है।"},
+        {q: "माध्यम में चाल 2 × 10^8 m/s है। अपवर्तनांक क्या होगा?", o: ["1.5", "1.33", "2.0", "1.0"], a: 0, e: "n = (3x10^8) / (2x10^8) = 1.5।"},
+        {q: "तारे टिमटिमाते नजर आते हैं, इसका कारण क्या है?", o: ["प्रकीर्णन", "वायुमंडलीय अपवर्तन", "परावर्तन", "पूर्ण आंतरिक परावर्तन"], a: 1, e: "वायुमंडल की विभिन्न परतों से अपवर्तन के कारण।"},
+        {q: "पानी का अपवर्तनांक 1.33 है। पानी में प्रकाश की चाल क्या होगी?", o: ["2.25 × 10^8 m/s", "3 × 10^8 m/s", "2.0 × 10^8 m/s", "1.5 × 10^8 m/s"], a: 0, e: "2.25 लाख किमी/सेकंड।"},
+        {q: "सरल सूक्ष्मदर्शी में किसका उपयोग किया जाता है?", o: ["अवलत दर्पण", "अवतल लेंस", "उत्तल लेंस", "उत्तल दर्पण"], a: 2, e: "कम फोकस दूरी वाला उत्तल लेंस।"},
+        {q: "पार्श्विक विस्थापन (Lateral Displacement) निर्भर करता है:", o: ["मोटाई पर", "आपतन कोण पर", "अपवर्तनांक पर", "उपरोक्त सभी"], a: 3, e: "इन सभी कारकों पर।"},
+        {q: "उत्तल लेंस के सामने वस्तु 2F पर हो, तो प्रतिबिंब का आकार होगा:", o: ["बड़ा", "छोटा", "बराबर", "बहुत बड़ा"], a: 2, e: "2F पर प्रतिबिंब वस्तु के बराबर बनता है।"},
+        {q: "लेंस की क्षमता (P) और फोकस दूरी (f) का संबंध है:", o: ["P = f", "P = 1/f", "P = 2f", "f = P"], a: 1, e: "P, f का व्युत्क्रमानुपाती होता है।"},
+        {q: "यदि क्षमता +5 D है, तो फोकस दूरी होगी:", o: ["20 cm", "5 cm", "50 cm", "-20 cm"], a: 0, e: "f = 100/5 = 20 cm।"},
+        {q: "किस माध्यम का अपवर्तनांक सबसे अधिक होता है?", o: ["हवा", "पानी", "कांच", "हीरा"], a: 3, e: "हीरा (2.42)।"},
+        {q: "कांच की सिल्ली से निर्गत किरण आपतित किरण के साथ कैसी होती है?", o: ["लंबवत", "समांतर (Parallel)", "विपरीत", "45° पर"], a: 1, e: "निर्गत और आपतित किरणें समांतर होती हैं।"},
+        {q: "पानी के अंदर डूबा हुआ सिक्का उठा हुआ दिखता है, कारण है:", o: ["परावर्तन", "अपवर्तन", "विक्षेपण", "विवर्तन"], a: 1, e: "अपवर्तन के कारण प्रतिबिंब ऊपर उठता है।"},
+        {q: "लेंस के दोनों वक्रता केंद्रों को जोड़ने वाली रेखा क्या कहलाती है?", o: ["फोकस दूरी", "मुख्य अक्ष", "वक्रता त्रिज्या", "द्वार"], a: 1, e: "इसे मुख्य अक्ष (Principal Axis) कहते हैं।"},
+        {q: "कम फोकस दूरी वाले लेंस की क्षमता होती है:", o: ["कम", "अधिक", "शून्य", "अनंत"], a: 1, e: "f कम होने पर P बढ़ जाती है।"},
+        {q: "किस स्थिति में प्रकाश की किरण का अपवर्तन नहीं होता?", o: ["लंबवत आपतन", "समान अपवर्तनांक होने पर", "दोनों (A और B)", "कोई नहीं"], a: 2, e: "लंबवत गिरने पर या माध्यम बदलने पर भी अपवर्तनांक समान होने पर।"},
+        {q: "समतल कांच की प्लेट की क्षमता क्या होती है?", o: ["अनंत", "1 D", "शून्य (0)", "परिभाषित नहीं"], a: 2, e: "समतल कांच किरणों को मोड़ता नहीं है।"},
+        {q: "सिनेमा प्रोजेक्टर में किस लेंस का उपयोग किया जाता है?", o: ["अवतल लेंस", "उत्तल लेंस", "बेलनाकार लेंस", "द्विफोकसी लेंस"], a: 1, e: "बड़ा प्रतिबिंब बनाने के लिए।"},
+        {q: "किसी उत्तल लेंस की फोकस दूरी 50 cm है, तो उसकी क्षमता क्या होगी?", o: ["+2 D", "-2 D", "+0.5 D", "+5 D"], a: 0, e: "P = 100/50 = +2 D।"}
+    ];
+
+    let score = 0, answered = 0, secondsLeft = 1800;
+    let timerInterval;
+
+    function init() {
+        const list = document.getElementById('questions-list');
+        questions.forEach((data, i) => {
+            const card = document.createElement('div');
+            card.className = 'q-card';
+            card.innerHTML = `<strong>Q${i + 1}. ${data.q}</strong>
+                <div id="grp-${i}">${data.o.map((opt, oi) => `<button class="option" onclick="validate(${i}, ${oi})">${opt}</button>`).join('')}</div>
+                <div id="ex-${i}" class="explanation">व्याख्या: ${data.e}</div>`;
+            list.appendChild(card);
+        });
+        startClock();
+    }
+
+    function validate(qi, oi) {
+        const btns = document.getElementById(`grp-${qi}`).getElementsByTagName('button');
+        const correct = questions[qi].a;
+        if (oi === correct) { btns[oi].classList.add('correct'); score++; }
+        else { btns[oi].classList.add('wrong'); btns[correct].classList.add('correct'); }
+        document.getElementById(`ex-${qi}`).style.display = 'block';
+        for (let b of btns) b.classList.add('locked');
+        answered++;
+        if (answered === questions.length) finish();
+    }
+
+    function startClock() {
+        timerInterval = setInterval(() => {
+            secondsLeft--;
+            let m = Math.floor(secondsLeft/60), s = secondsLeft%60;
+            document.getElementById('timer-box').innerText = `समय शेष: ${m}:${s<10?'0'+s:s}`;
+            if (secondsLeft <= 0) finish();
+        }, 1000);
+    }
+
+    function finish() {
+        clearInterval(timerInterval);
+        document.getElementById('quiz-ui').style.display = 'none';
+        document.getElementById('final-screen').style.display = 'block';
+        document.getElementById('final-score-text').innerText = `आपका स्कोर: ${score} / 40`;
+    }
+
+    function renderCertificate() {
+        const name = document.getElementById('studentName').value;
+        if (!name) return alert("नाम लिखें!");
+        document.getElementById('final-screen').style.display = 'none';
+        document.getElementById('certificate-display').style.display = 'block';
+        document.getElementById('cert-user-name').innerText = name;
+        document.getElementById('cert-score').innerText = score;
+        document.getElementById('cert-percent').innerText = ((score/40)*100).toFixed(1);
+        document.getElementById('cert-date').innerText = new Date().toLocaleDateString('hi-IN');
+    }
+    init();
+</script>
+</body>
+</html>
