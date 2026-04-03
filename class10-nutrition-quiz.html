@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Class 10 Nutrition Quiz</title>
+<title>Nutrition Quiz</title>
 
 <style>
-body{font-family:Arial;margin:10px;background:#f4f9f4;}
+body{font-family:Arial;background:#f4f9f4;padding:10px;}
 .container{max-width:800px;margin:auto;background:white;padding:20px;border-radius:10px;}
 .option{display:block;margin:8px 0;padding:10px;border:1px solid #ccc;border-radius:5px;cursor:pointer;}
 .correct{background:#2ecc71;color:white;}
@@ -24,7 +24,6 @@ body{font-family:Arial;margin:10px;background:#f4f9f4;}
 </div>
 
 <script>
-
 const questions = [
 {q:"प्रकृति में ऑक्सीजन का संतुलन कैसे बना रहता है?",o:["संयोजन","प्रकाश संश्लेषण","अपघटन","कोई नहीं"],a:1},
 {q:"प्रकाश संश्लेषण में ऑक्सीजन कहाँ से निकलती है?",o:["जल","CO2","ग्लूकोज","क्लोरोफिल"],a:0},
@@ -74,9 +73,7 @@ const questions = [
 {q:"जठर रस में क्या होता है?",o:["HCl","पेप्सिन","म्यूकस","सभी"],a:3},
 {q:"पोषक तत्वों का अवशोषण कहाँ होता है?",o:["आमाशय","छोटी आँत","बड़ी आँत","मुख"],a:1}
 ];
-
 let score=0;
-
 const quiz=document.getElementById("quiz");
 
 questions.forEach((q,i)=>{
@@ -89,7 +86,6 @@ quiz.appendChild(div);
 function check(btn,i,j){
 let correct=questions[i].a;
 let options=btn.parentElement.querySelectorAll(".option");
-
 options.forEach(b=>b.classList.add("locked"));
 
 if(j===correct){
@@ -99,10 +95,8 @@ score++;
 btn.classList.add("wrong");
 options[correct].classList.add("correct");
 }
-
 document.getElementById("score").innerText="Score: "+score+"/40";
 }
-
 </script>
 
 </body>
